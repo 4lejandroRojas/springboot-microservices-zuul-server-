@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class PreTiempoTranscurridoFilter extends ZuulFilter {
-    private static final Logger log = LoggerFactory.getLogger(PreTiempoTranscurridoFilter.class);
+public class PostTiempoTranscurridoFilter extends ZuulFilter {
+    private static final Logger log = LoggerFactory.getLogger(PostTiempoTranscurridoFilter.class);
     @Override
     public String filterType() {
-        return "pre";
+        return "post";
     }
 
     @Override
@@ -32,10 +32,13 @@ public class PreTiempoTranscurridoFilter extends ZuulFilter {
 
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-        log.info(String.format("%s request enrutado a %s", request.getMethod(), request.getRequestURL()));
+        log.info("Entrando a post filter");
 
-        Long tiempoInicio = System.currentTimeMillis();
-        request.setAttribute("tiempoInicio", tiempoInicio);
+        Long tiempoInicio = (Long) request.getAttribute("tiempoInicio");
+        Long tiempoFinal = System.currentTimeMillis();
+        Long tiempoTranscurrido = tiempoFinal - tiempoInicio;
+
+        log.info(String.format("Tiempo transcurrido en segundos %s ", tiempoTranscurrido.doubleValue()/1000.00));
 
         return null;
     }
